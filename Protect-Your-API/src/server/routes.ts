@@ -51,6 +51,16 @@ router.get('/api/author/:name', async (req, res) => {
     }
 });
 
+// get author by email
+router.get('/api/author/email/:email', async (req, res) => {
+    try {
+        res.json(await db.Blogs.getAuthorByEmail(req.params.email));
+    } catch (e) {
+        res.sendStatus(500);
+        console.log(e);
+    }
+});
+
 router.post('/api/author/new/:name', async (req, res) => {
     try {
         res.json(await db.Blogs.createAuthor(req.params.name));
@@ -100,6 +110,33 @@ router.delete('/api/blog/delete/:blogid', async (req, res) => {
 router.get('/api/blog/tags/:id', async (req, res) => {
     try {
         res.json(await db.Blogs.getBlogTags(req.params.id)); 
+    } catch (e) {
+        res.sendStatus(500);
+        console.log(e);
+    }
+});
+
+router.get('/api/blog/tokens/:id/:token', async (req, res) => {
+    try {
+        res.json(await db(req.params.id, req.params.token)); 
+    } catch (e) {
+        res.sendStatus(500);
+        console.log(e);
+    }
+});
+
+router.post('/api/blog/tokens/add/:authorid/:token', async (req, res) => {
+    try {
+        res.json(await db.Blogs.addToken(req.params.authorid, req.params.token)); 
+    } catch (e) {
+        res.sendStatus(500);
+        console.log(e);
+    }
+});
+
+router.put('/api/blog/tokens/update/:token/:id', async (req, res) => {
+    try {
+        res.json(await db.Blogs.updateToken(req.params.token, req.params.id)); 
     } catch (e) {
         res.sendStatus(500);
         console.log(e);
