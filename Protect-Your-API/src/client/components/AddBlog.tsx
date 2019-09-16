@@ -113,5 +113,5 @@ export interface IAddState {
     blogTitle: string,
     blogContent: string,
     tagID: string,
-    tags: Array<string>
+    tags: Array<any>
 }

@@ -36,6 +36,15 @@ export const getAuthorById = async (id: string) => {
     });
 }
 
+export const getAuthorByEmail = async (email: string) => {
+    return new Promise((resolve, reject) => {
+        Connection.query('SELECT * FROM authors WHERE email = ?', [email], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+}
+
 export const createAuthor = async (name: string) => {
     return new Promise((resolve, reject) => {
         let email = name + '@blog.com';
@@ -73,7 +82,7 @@ export const deleteBlog = async (blogid: string) => {
     });
 }
 
-// GET all Blogtags for a blogid
+// GET all Blogtags of blog by blogid
 export const getBlogTags = async (blogid: string) => {
     return new Promise((resolve, reject) => {
         Connection.query('CALL spBlogTags(?)', [blogid], (err, results) => {
@@ -94,7 +103,6 @@ export const postBlogTag = async (blogid: string, tagid: string) => {
 
 export const getAllTags = async () => {
     return new Promise((resolve, reject) => {
-        console.log('grabbing tags');
         Connection.query('SELECT id, name FROM tags', (err, results) => {
             if (err) return reject(err);
             resolve(results);
@@ -102,10 +110,9 @@ export const getAllTags = async () => {
     });
 }
 
-
 export default {
     getBlogs, getBlogByID,
     postBlog, updateBlog, deleteBlog,
     getBlogTags, postBlogTag, getAllTags,
-    getAuthorByName, getAuthorById, createAuthor
+    getAuthorByName, getAuthorById, getAuthorByEmail, createAuthor,
 }
