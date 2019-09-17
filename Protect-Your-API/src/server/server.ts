@@ -1,12 +1,18 @@
 import * as express from 'express';
-import apiRouter from './routes';
+import router from './routes';
 import * as path from 'path';
+
+import * as passport from 'passport';
+import './middleware/localstrategy';
+import './middleware/bearerstrategy';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use(apiRouter);
+app.use(passport.initialize());
+
+app.use(router);
 
 // allows me to refresh outside of / 
 app.use('*', (req, res) => {

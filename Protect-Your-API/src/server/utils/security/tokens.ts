@@ -7,14 +7,14 @@ export const CreateToken = async (payload: IPayload) => {
     let tokenId: any = await db.AccessTokens.addToken(payload.userid);
     payload.accesstokenid = tokenId.insertId; 
     payload.unique = crypto.randomBytes(32).toString('hex');
-    let token = await jwt.sign(payload.accesstokenid, config.auth.secret);
+    let token = await jwt.sign(payload, config.auth.secret);
     await db.AccessTokens.updateToken(payload.accesstokenid, token);
     return token;
 };
 
 export const ValidToken = async (token: string) => {
     let payload: IPayload = <IPayload>jwt.decode(token);
-    let accesstokenid = await db.AccessTokens.getToken(payload.accesstokenid, token)[0];
+    let [accesstokenid]: any = await db.AccessTokens.getToken(payload.accesstokenid, token);
     if (!accesstokenid) {
         throw new Error('Invalid Token!');
     } else {
