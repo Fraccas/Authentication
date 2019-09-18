@@ -1,7 +1,7 @@
 import * as passport from 'passport';
 import * as BearStrategy from 'passport-http-bearer';
 
-import { ValidToken} from '../utils/security/tokens';
+import { ValidToken } from '../utils/security/tokens';
 import DB from '../db';
 
 passport.use(new BearStrategy.Strategy(async (token, done) => {

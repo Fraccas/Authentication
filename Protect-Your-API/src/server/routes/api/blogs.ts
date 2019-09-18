@@ -30,7 +30,7 @@ router.get('/alltags', async (req, res) => {
     }
 });
 
-router.get('/:id', isLogged, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         res.json(await db.Blogs.getBlogByID(req.params.id));
     } catch (e) {

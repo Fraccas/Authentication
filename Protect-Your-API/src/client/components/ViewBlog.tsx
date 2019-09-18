@@ -15,7 +15,7 @@ class ViewBlog extends Component<IViewProps, IViewState> {
 
     async componentDidMount() {
         try {
-            let url = '/api/blog/' + this.state.id;
+            let url = '/api/blogs/' + this.state.id;
             let r = await fetch(url);
             let blogData = await r.json();
         
@@ -23,7 +23,7 @@ class ViewBlog extends Component<IViewProps, IViewState> {
                 blog: blogData[0],
             });
 
-            let r2 = await fetch('/api/blog/tags/' + this.state.id);
+            let r2 = await fetch('/api/blogs/tags/' + this.state.id);
             let res = await r2.json();
             this.setState({tag: res[0][0]['name']});
 
@@ -50,7 +50,7 @@ class ViewBlog extends Component<IViewProps, IViewState> {
                         <h5>{this.state.blog._created.slice(0, 10)}</h5>
 
                         <button className="btn btn-warning ml-2 mt-3" type="submit"
-                            onClick={() => {this.props.history.push('/blog/update/' + this.state.id)}}>  Edit Blog  </button>
+                            onClick={() => {this.props.history.push('/blogs/update/' + this.state.id)}}>  Edit Blog  </button>
                         
                         <button className="btn btn-secondary ml-2 mt-3" type="submit"
                         onClick={() => {this.props.history.push('/')}}>  Back  </button>

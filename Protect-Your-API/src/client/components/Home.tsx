@@ -21,7 +21,7 @@ class Home extends React.Component<IAppProps, IAppState> {
             
             // convert ids to author names
             for(let blog of this.state.blogA) {
-                let r2 = await fetch('/api/author/name/' + blog.authorid);
+                let r2 = await fetch('/api/authors/name/' + blog.authorid);
                 let res2 = await r2.json();
                 let authorName = res2[0]['name'];
                 blog.authorid = authorName;

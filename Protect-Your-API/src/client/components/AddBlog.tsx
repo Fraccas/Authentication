@@ -16,7 +16,7 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
     // grab all tags from DB
     async componentDidMount() {
         try {
-            let r = await fetch('/api/blog/alltags');
+            let r = await fetch('/api/blogs/alltags');
             let tagsD = await r.json();
             this.setState({tags: tagsD});
         } catch (error) {
@@ -70,7 +70,7 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
         if (this.state.name && this.state.blogTitle) {
             // get author id based on name given
             let authorID = '';
-            let r = await fetch('/api/author/' + this.state.name);
+            let r = await fetch('/api/tags/' + this.state.name);
             let res = await r.json();
             if (res[0]) authorID = res[0]['id'];
 
