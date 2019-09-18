@@ -14,6 +14,8 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
         }
     }
 
+    private saving: boolean = false;
+
     // grab all tags from DB
     async componentDidMount() {
         if (!User || User.userid === null || User.role !== 'admin') {
@@ -73,6 +75,8 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
 
     // send user data to store on the backend
     SubmitBlog = async () => {
+        if (this.saving) return; // already clicked and processing 
+
         if (this.state.name && this.state.blogTitle) {
             // get author id based on name given
             let authorID = '';
@@ -93,8 +97,20 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
                 authorID = res2.toString();
             }
 
-            let url = '/api/blogs/post/' + this.state.blogTitle + '/' + this.state.blogContent + '/' + authorID + '/' + this.state.tagID;
-            let result = await json(url, 'POST');
+            try {
+                this.saving = true;
+                let url = '/api/blogs/post/' + this.state.blogTitle + '/' + this.state.blogContent + '/' + authorID + '/' + this.state.tagID;
+                let result = await json(url, 'POST');
+
+                if (result) {
+                    this.setState({name: '', blogTitle: '', blogContent: ''});
+                }
+            } catch (e) {
+                throw e;
+            } finally {
+                this.saving = false; // done with request 
+            }
+            
                 
         } else {
             alert('Please enter a name and blog info.');

@@ -15,9 +15,10 @@ class Admin extends Component<IAdminProps, IAdminState> {
 
     async componentDidMount() {
         try {
-            let url = '/api/blog/' + this.state.id;
+            let url = '/api/blogs/' + this.state.id;
             let r = await fetch(url);
             let blogData = await r.json();
+            console.log(blogData);
         
             this.setState({
                 blog: blogData[0], // returns array, but only one object needed
@@ -63,7 +64,7 @@ class Admin extends Component<IAdminProps, IAdminState> {
         if (this.state.nTitle) this.state.blog.title = this.state.nTitle;
         if (this.state.nContent) this.state.blog.content = this.state.nContent;
 
-        let url = '/api/blog/update/' + this.state.blog.title + '/' + this.state.blog.content + '/' + this.state.id;
+        let url = '/api/blogs/update/' + this.state.blog.title + '/' + this.state.blog.content + '/' + this.state.id;
         return fetch(url, {
             method: 'PUT',
             headers: {
@@ -78,7 +79,7 @@ class Admin extends Component<IAdminProps, IAdminState> {
     }
 
     DeleteBlog = () => {
-        let url = '/api/blog/delete/' + this.state.id;
+        let url = '/api/blogs/delete/' + this.state.id;
         return fetch(url, {
             method: 'DELETE',
             headers: {

@@ -5,8 +5,17 @@ import AddBlog from './components/admin/AddBlog';
 import ViewBlog from './components/public/ViewBlog';
 import EditBlog from './components/admin/EditBlog';
 import Login from './components/admin/Login';
+import { User } from './utils/api'; 
 
 class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            logged: false
+        };
+    }
+
     render() {
         return (
             <Router>
@@ -17,7 +26,8 @@ class App extends React.Component {
                 </ul>
                 <ul className="navbar-nav navbar-right">
                     <li><Link to={'/'} className="nav-link"> Blogs </Link></li>
-                    <li><Link to={'/blog/add'} className="nav-link"> Admin </Link></li> 
+                    {this.showAdmin()}   
+                    {this.showLog()}                                 
                 </ul>
                 </nav>
 
@@ -31,6 +41,25 @@ class App extends React.Component {
             </div>        
             </Router>   
         )
+    }
+
+    showAdmin = () => {
+        if (User.role === "admin") return (<li><Link to={'/blog/add'} className="nav-link"> Add Blog </Link></li>);
+    }
+
+    showLog = () => {
+        if (User.userid == null) 
+            return (<li><Link to={'/login'} className="nav-link"> Login </Link></li>);
+        else {
+            return (<button className="btn" type="submit"
+            onClick={this.logout}>Logout</button>);
+        }
+    }
+
+    logout = () => {
+        localStorage.clear();
+        this.setState({logged: false});
+        window.location.reload();
     }
 }
 

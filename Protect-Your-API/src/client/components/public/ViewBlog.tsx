@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { json } from '../../utils/api';
+import { json, User } from '../../utils/api';
 
 class ViewBlog extends Component<IViewProps, IViewState> {
 
@@ -49,18 +49,24 @@ class ViewBlog extends Component<IViewProps, IViewState> {
                         <h5>{this.state.author}</h5>
                         <h5>{this.state.blog._created.slice(0, 10)}</h5>
 
-                        <button className="btn btn-warning ml-2 mt-3" type="submit"
-                            onClick={() => {this.props.history.push('/blogs/update/' + this.state.id)}}>  Edit Blog  </button>
-                        
-                        <button className="btn btn-secondary ml-2 mt-3" type="submit"
-                        onClick={() => {this.props.history.push('/')}}>  Back  </button>
-                        
+                        {this.showUpdate()}
+                        {this.showDelete()}
                     </div>
                 </div>
             );
         } else {
             return (<h1>No chirps returned. Invalid ID.</h1>)
         }
+    }
+
+    showUpdate = () => {
+        if (User.role === "admin") return (<button className="btn btn-warning ml-2 mt-3" type="submit"
+        onClick={() => {this.props.history.push('/blog/update/' + this.state.id)}}>  Edit Blog  </button>);
+    }
+
+    showDelete = () => {
+        if (User.role === "admin") return (<button className="btn btn-secondary ml-2 mt-3" type="submit"
+        onClick={() => {this.props.history.push('/')}}>  Back  </button>);
     }
 }
 
