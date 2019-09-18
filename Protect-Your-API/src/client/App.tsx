@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Home from './components/Home';
-import AddBlog from './components/AddBlog';
-import ViewBlog from './components/ViewBlog';
-import EditBlog from './components/EditBlog';
+import Home from './components/public/Home';
+import AddBlog from './components/admin/AddBlog';
+import ViewBlog from './components/public/ViewBlog';
+import EditBlog from './components/admin/EditBlog';
+import Login from './components/admin/Login';
 
 class App extends React.Component {
     render() {
@@ -16,7 +17,7 @@ class App extends React.Component {
                 </ul>
                 <ul className="navbar-nav navbar-right">
                     <li><Link to={'/'} className="nav-link"> Blogs </Link></li>
-                    <li><Link to={'/blog/add'} className="nav-link"> Post Blog </Link></li> 
+                    <li><Link to={'/blog/add'} className="nav-link"> Admin </Link></li> 
                 </ul>
                 </nav>
 
@@ -25,6 +26,7 @@ class App extends React.Component {
                     <Route exact path='/blog/add' component={AddBlog} />
                     <Route exact path ='/blog/view/:id/:author' component={ViewBlog} />
                     <Route exact path='/blog/update/:id' component={EditBlog} />
+                    <Route exact path='/login' component={Login} />
                 </Switch>
             </div>        
             </Router>   

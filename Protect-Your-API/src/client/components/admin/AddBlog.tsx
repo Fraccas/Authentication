@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { json, User } from '../../utils/api'; 
 
 export default class AddBlog extends React.Component<IAddProps, IAddState> {
     constructor(props: IAddProps) {
@@ -15,12 +16,17 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
 
     // grab all tags from DB
     async componentDidMount() {
-        try {
-            let r = await fetch('/api/blogs/alltags');
-            let tagsD = await r.json();
-            this.setState({tags: tagsD});
-        } catch (error) {
-            console.log(error);
+        if (!User || User.userid === null || User.role !== 'admin') {
+            this.props.history.replace('/login');
+        } else {
+            // logged in, grab them tag options
+            try {
+                let r = await fetch('/api/blogs/alltags');
+                let tagsD = await r.json();
+                this.setState({tags: tagsD});
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -70,7 +76,7 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
         if (this.state.name && this.state.blogTitle) {
             // get author id based on name given
             let authorID = '';
-            let r = await fetch('/api/tags/' + this.state.name);
+            let r = await fetch('/api/authors/' + this.state.name);
             let res = await r.json();
             if (res[0]) authorID = res[0]['id'];
 
@@ -79,27 +85,17 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
                 const settings = {
                     method: 'POST',
                     headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     }
                 };
-                let r2 = await fetch('/api/author/new/' + this.state.name, settings);
+                let r2 = await fetch('/api/authors/new/' + this.state.name, settings);
                 let res2 = await r2.json();
                 authorID = res2.toString();
             }
 
-            let link = '/api/blog/post/' + this.state.blogTitle + '/' + this.state.blogContent + '/' + authorID + '/' + this.state.tagID;
-            return fetch(link, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                mode: 'cors',
-                credentials: 'same-origin',
-            }).then(response => {    
-                this.props.history.push('/');       
-            });                     
+            let url = '/api/blogs/post/' + this.state.blogTitle + '/' + this.state.blogContent + '/' + authorID + '/' + this.state.tagID;
+            let result = await json(url, 'POST');
+                
         } else {
             alert('Please enter a name and blog info.');
         }

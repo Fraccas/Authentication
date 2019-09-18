@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { json } from '../../utils/api';
 
 class ViewBlog extends Component<IViewProps, IViewState> {
 
@@ -15,16 +16,15 @@ class ViewBlog extends Component<IViewProps, IViewState> {
 
     async componentDidMount() {
         try {
-            let url = '/api/blogs/' + this.state.id;
-            let r = await fetch(url);
-            let blogData = await r.json();
+            let url = '/api/blogs/' + this.state.id; 
+            let blogData = await json(url); // using json api auth from utils
         
             this.setState({
                 blog: blogData[0],
             });
 
-            let r2 = await fetch('/api/blogs/tags/' + this.state.id);
-            let res = await r2.json();
+            // grab tag from blog
+            let res = await json('/api/blogs/tags/' + this.state.blog.id);
             this.setState({tag: res[0][0]['name']});
 
         } catch (error) {

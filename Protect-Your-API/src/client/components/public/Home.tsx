@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { json } from '../../utils/api';
 
 class Home extends React.Component<IAppProps, IAppState> {
 
@@ -13,8 +14,7 @@ class Home extends React.Component<IAppProps, IAppState> {
 
     async componentDidMount() {
         try {
-            let r = await fetch('/api/blogs');
-            let blogData = await r.json();
+            let blogData = await json('/api/blogs');
 
             // set blogdata to state for render
             this.setState({blogA: blogData});    
