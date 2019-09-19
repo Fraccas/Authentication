@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { json, User, SetAccessToken } from '../../utils/api';
-import { RouteComponentProps, Link } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 
-export default class Login extends React.Component<ILoginProps, ILoginState> {
+export default class Register extends React.Component<IRegisterProps, IRegisterState> {
 
-    constructor(props: ILoginProps) {
+    constructor(props: IRegisterProps) {
         super(props);
         this.state = {
+            username: '',
             email: '',
             password: '',
-            loginError: false
+            registerError: false
         };
     }
 
@@ -21,13 +22,14 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
         if (User.userid != null) this.props.history.push('/');
     }
 
-    handleLoginSubmit = async() => {
-        if (this.loggingIn) return; // user already clicked login. processing
+    handleRegisterSubmit = async() => {
+        if (this.loggingIn) return; // user already clicked create. processing
 
-        if (this.state.email && this.state.password) {
+        if (this.state.email && this.state.password && this.state.username) {
             try {
                 this.loggingIn = true;
-                let result = await json('/auth/login', 'POST', {
+                let result = await json('/auth/register', 'POST', {
+                    name: this.state.username,
                     email: this.state.email,
                     password: this.state.password
                 });
@@ -35,16 +37,14 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
                 if (result) { // don't know username atm
                     SetAccessToken(result.token, { userid: result.userid, role: result.role });
 
-                    // grab username
-                    let unResult = await json('/api/authors/name/' + result.userid);
+                    localStorage.setItem('username', this.state.username);
+                    User.username = this.state.username;
 
-                    localStorage.setItem('username', unResult[0]['name']);
-                    User.username = unResult[0]['name'];
                     localStorage.setItem('email', this.state.email);
                     window.location.reload(); // logged in, now refresh to get redirected and update nav bar
                 } else {
                     // check login status
-                    this.setState({loginError: true});
+                    this.setState({registerError: true});
                 }
             } catch(e) {
                 throw e;
@@ -53,18 +53,23 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
             }
         } else {
             // user didn't enter email and/or pass
-            this.setState({loginError: true});
+            this.setState({registerError: true});
         }
     }
 
     render () {
-        if (this.state.loginError === true) {
-            this.alert = <div className='alert alert-danger p-2 my-4' role='alert'>Invalid Login Info</div>
+        if (this.state.registerError === true) {
+            this.alert = <div className='alert alert-danger p-2 my-4' role='alert'>Please enter all information!</div>
         }
 
         return (
             <div className="card m-4 p-3 shadow">
                 <div className="card-body">
+                    <h5 className="m-3">Name
+                    <input type="text" className="form-control" placeholder='name...'
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ username: e.target.value })}></input>
+                    </h5>
+
                     <h5 className="m-3">Email
                     <input type="text" className="form-control" placeholder='email...'
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ email: e.target.value })}></input>
@@ -75,10 +80,8 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ password: e.target.value })}></input>
                     </h5>
 
-                    <Link to={'/register'} className="nav-link text-center"> Create New Account </Link>   
-
                     <button className="btn btn-secondary mt-3 col-md-12 text-center" type="submit"
-                        onClick={this.handleLoginSubmit}>Login
+                        onClick={this.handleRegisterSubmit}>Create Account
                     </button>
                     {this.alert}
                 </div>
@@ -87,12 +90,13 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
     }
 }
 
-export interface ILoginProps extends RouteComponentProps { }
+export interface IRegisterProps extends RouteComponentProps { }
 
-export interface ILoginState {
+export interface IRegisterState {
+    username: string
     email: string, 
     password: string,
-    loginError: boolean
+    registerError: boolean
 }
 
 

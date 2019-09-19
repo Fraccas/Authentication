@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { json } from '../../utils/api';
 
 class Admin extends Component<IAdminProps, IAdminState> {
 
@@ -12,6 +13,8 @@ class Admin extends Component<IAdminProps, IAdminState> {
             nContent: ''
         }
     }
+
+    private saving: boolean = false;
 
     async componentDidMount() {
         try {
@@ -59,23 +62,27 @@ class Admin extends Component<IAdminProps, IAdminState> {
         }
     }
 
-    UpdateBlog = () => {       
+    UpdateBlog = async () => {       
+        if (this.saving) return; // prevent spam click
+
         // make sure new text is not empty (make sure an update occured from input)
         if (this.state.nTitle) this.state.blog.title = this.state.nTitle;
         if (this.state.nContent) this.state.blog.content = this.state.nContent;
 
-        let url = '/api/blogs/update/' + this.state.blog.title + '/' + this.state.blog.content + '/' + this.state.id;
-        return fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors',
-            credentials: 'same-origin'
-        }).then(response => {           
-            this.props.history.push('/');
-        });
+        try {
+            this.saving = true;
+            let url = '/api/blogs/update/' + this.state.blog.title + '/' + this.state.blog.content + '/' + this.state.id;
+            let result = await json(url, 'PUT');
+
+            if (result) {
+                this.props.history.push('/');
+            }
+        } catch (e) {
+            throw e;
+        } finally {
+            this.saving = false;
+        }
+
     }
 
     DeleteBlog = () => {

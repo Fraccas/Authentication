@@ -50,7 +50,9 @@ class ViewBlog extends Component<IViewProps, IViewState> {
                         <h5>{this.state.blog._created.slice(0, 10)}</h5>
 
                         {this.showUpdate()}
-                        {this.showDelete()}
+                        
+                        <button className="btn btn-secondary ml-2 mt-3" type="submit"
+                        onClick={() => {this.props.history.push('/')}}>  Back  </button>
                     </div>
                 </div>
             );
@@ -62,11 +64,6 @@ class ViewBlog extends Component<IViewProps, IViewState> {
     showUpdate = () => {
         if (User.role === "admin") return (<button className="btn btn-warning ml-2 mt-3" type="submit"
         onClick={() => {this.props.history.push('/blog/update/' + this.state.id)}}>  Edit Blog  </button>);
-    }
-
-    showDelete = () => {
-        if (User.role === "admin") return (<button className="btn btn-secondary ml-2 mt-3" type="submit"
-        onClick={() => {this.props.history.push('/')}}>  Back  </button>);
     }
 }
 

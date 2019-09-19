@@ -6,7 +6,7 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
     constructor(props: IAddProps) {
         super(props);
         this.state = {
-            name: '',
+            name: User.username,
             blogTitle: '',
             blogContent: '', 
             tagID: '1',
@@ -39,8 +39,8 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
                     <h2 className="text-center p-2 rounded bg-secondary text-light">Add Blog</h2>
 
                     <label htmlFor="name">Name</label>
-                    <input type="text" className="form-control" placeholder='username...'
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ name: e.target.value })}></input>
+                    <input type="text" disabled className="form-control" value={User.username}
+                    ></input>
                     <hr></hr>
 
                     <label htmlFor="tag-select">Choose a tag:</label><br></br>
@@ -77,43 +77,24 @@ export default class AddBlog extends React.Component<IAddProps, IAddState> {
     SubmitBlog = async () => {
         if (this.saving) return; // already clicked and processing 
 
-        if (this.state.name && this.state.blogTitle) {
-            // get author id based on name given
-            let authorID = '';
-            let r = await fetch('/api/authors/' + this.state.name);
-            let res = await r.json();
-            if (res[0]) authorID = res[0]['id'];
-
-            // if name does not exist create new author and grab id
-            if (!authorID) {
-                const settings = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                };
-                let r2 = await fetch('/api/authors/new/' + this.state.name, settings);
-                let res2 = await r2.json();
-                authorID = res2.toString();
-            }
-
+        if (this.state.blogContent && this.state.blogTitle) {
+            let authorID = User.userid;
             try {
                 this.saving = true;
                 let url = '/api/blogs/post/' + this.state.blogTitle + '/' + this.state.blogContent + '/' + authorID + '/' + this.state.tagID;
                 let result = await json(url, 'POST');
 
                 if (result) {
-                    this.setState({name: '', blogTitle: '', blogContent: ''});
+                    this.setState({blogTitle: '', blogContent: ''});
+                    this.props.history.push('/');
                 }
             } catch (e) {
                 throw e;
             } finally {
                 this.saving = false; // done with request 
-            }
-            
-                
+            }   
         } else {
-            alert('Please enter a name and blog info.');
+            alert('Please enter blog info.');
         }
     }
 }

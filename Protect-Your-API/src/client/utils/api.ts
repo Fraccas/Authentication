@@ -3,12 +3,13 @@ import * as fetch from 'isomorphic-fetch';
 export let AccessToken: string = localStorage.getItem('token') || null;
 export let User: any = {
     userid: localStorage.getItem('userid') || null,
+    username: localStorage.getItem('username') || null,
     role: localStorage.getItem('role') || null
 };
 
 export const json = async <T = any>(uri: string, method: string = 'GET', body?: {}) => { // method default GET
     let headers: any = {
-        'Content-type': 'application/json'
+        'Content-Type': 'application/json'
     };
 
     if (AccessToken) { // logged in

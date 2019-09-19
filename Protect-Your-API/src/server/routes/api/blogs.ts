@@ -43,13 +43,14 @@ router.post('/post/:title/:content/:authorid/:tagid', async (req, res) => {
     try {
         // grab insertID and insert tag with this insertID into DB
         let insertID = await db.Blogs.postBlog(req.params.title, req.params.content, req.params.authorid);
-        res.sendStatus(200);
+        res.json('something');
 
         // Insert Tag info into DB
         try {
             res.json(await db.Blogs.postBlogTag(insertID.toString(), req.params.tagid));
         } catch (e) {
-
+            res.sendStatus(500);
+            console.log(e);
         }
     } catch (e) {
         res.sendStatus(500);
@@ -60,6 +61,7 @@ router.post('/post/:title/:content/:authorid/:tagid', async (req, res) => {
 router.put('/update/:title/:content/:blogid', isLogged, async (req, res) => {
     try {
         res.json(await db.Blogs.updateBlog(req.params.title, req.params.content, req.params.blogid));
+        res.json('success');
     } catch (e) {
         res.sendStatus(500);
         console.log(e);

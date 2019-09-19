@@ -5,17 +5,10 @@ import AddBlog from './components/admin/AddBlog';
 import ViewBlog from './components/public/ViewBlog';
 import EditBlog from './components/admin/EditBlog';
 import Login from './components/admin/Login';
+import Register from './components/admin/Register';
 import { User } from './utils/api'; 
 
 class App extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            logged: false
-        };
-    }
-
     render() {
         return (
             <Router>
@@ -37,6 +30,7 @@ class App extends React.Component {
                     <Route exact path ='/blog/view/:id/:author' component={ViewBlog} />
                     <Route exact path='/blog/update/:id' component={EditBlog} />
                     <Route exact path='/login' component={Login} />
+                    <Route exact path='/register' component={Register} />
                 </Switch>
             </div>        
             </Router>   
@@ -58,7 +52,6 @@ class App extends React.Component {
 
     logout = () => {
         localStorage.clear();
-        this.setState({logged: false});
         window.location.reload();
     }
 }
